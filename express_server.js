@@ -13,6 +13,11 @@ app.get('/', (req, res) => {
   res.send('Hello!');
 });
 
+app.get('/urls', (req, res) => {
+  let urlData = {urls: urlDatabase};
+  res.render('urls_index', urlData);
+});
+
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
