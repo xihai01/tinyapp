@@ -11,6 +11,30 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+function generateRandomString() {
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    //get a random # from 1 - 3
+    let selectChoice = Math.floor(Math.random() * 3) + 1;
+    let char = '';
+    if (selectChoice === 1 || selectChoice === 2) {
+      //select a random uppercase alphabet
+      min = Math.ceil(65);
+      max = Math.floor(90);
+      let rand = Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+      char = selectChoice === 1 ? String.fromCharCode(rand) : String.fromCharCode(rand).toLowerCase();
+    }
+
+    //select a random # 
+    if (selectChoice === 3) {
+      let rand = Math.floor(Math.random() * 9) + 1;
+      char = rand.toString();
+    }
+    result += char;
+  }
+  return result;
+};
+
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
@@ -21,7 +45,9 @@ app.get('/urls', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
+  const shortURL = generateRandomString();
   console.log(req.body); //log the POST request body to the console
+  console.log(shortURL);
   res.send("Ok"); //respond with ok => replace later
 });
 
