@@ -49,11 +49,16 @@ app.post('/urls', (req, res) => {
   const longURL = req.body.longURL;
   //save shortURL to our url database
   urlDatabase[shortURL] = longURL;
-  res.send("Ok"); //respond with ok => replace later
+  res.redirect("/urls/" + shortURL); //redirect user to /urls/:shortURL 
 });
 
 app.get('/urls/new', (req, res) => {
   res.render('urls_new');
+});
+
+app.get('/u/:shortURL', (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
 });
 
 app.get('/urls/:shortURL', (req, res) => {
