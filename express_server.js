@@ -39,6 +39,15 @@ function generateRandomString() {
   return result;
 };
 
+function emailExist(email) {
+  for (const user in users) {
+    if (users[user].email === email) {
+      return true;
+    }
+  }
+  return false;
+};
+
 app.get('/urls', (req, res) => {
   //retrieve user data from cookie
   let user = users[req.cookies["user_id"]];
@@ -107,14 +116,25 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  //generate a new user
-  const email = req.body.email;
-  const password = req.body.password;
-  const id = generateRandomString();
-  users[id] = { id, email, password };
-  //set a cookie containing user id
-  res.cookie('user_id', id);
-  res.redirect('/urls');
+  const email = (req.body.email).trim();
+  const password = (req.body.password).trim();
+  //error checking - email and/or password can't be empty
+  if (email.length === 0 || password.length === 0) {
+    res.statusCode = 400;
+    res.send('400 - Bad Request. Email and/or password cannot be empty.');
+  } else if (emailExist(email)) {
+    //error checking - cannot have duplicate emails in db
+    res.statusCode = 400;
+    res.send('400 - Bad Request. THe user with this email already exists.');
+  } else {
+    //generate a new user
+    const id = generateRandomString();
+    users[id] = { id, email, password };
+    //set a cookie containing user id
+    res.cookie('user_id', id);
+    console.log(users);
+    res.redirect('/urls');
+  }
 });
 
 app.listen(PORT, () => {
