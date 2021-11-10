@@ -48,6 +48,15 @@ function emailExist(email) {
   return false;
 };
 
+function findUserbyEmail(email) {
+  for (const user in users) {
+    if (users[user].email === email) {
+      return users[user];
+    }
+  }
+  return null;
+};
+
 app.get('/urls', (req, res) => {
   //retrieve user data from cookie
   let user = users[req.cookies["user_id"]];
@@ -101,10 +110,21 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  //set a cookie containing the email
+  //error checking - email and password must match to login
   const email = (req.body.email).trim();
-  res.cookie('user_id', email);
-  res.redirect('/urls');
+  const password = (req.body.password).trim();
+  const foundUser = findUserbyEmail(email);
+  if (foundUser) {
+    if (foundUser.password === password) {
+      //set the cookie and redirect
+      res.cookie('user_id', foundUser.id);
+      res.redirect('/urls');
+    } else {
+      res.sendStatus(403);
+    }
+  } else {
+    res.sendStatus(403);
+  }
 });
 
 app.post('/logout', (req, res) => {
@@ -125,12 +145,10 @@ app.post('/register', (req, res) => {
   const password = (req.body.password).trim();
   //error checking - email and/or password can't be empty
   if (email.length === 0 || password.length === 0) {
-    res.statusCode = 400;
-    res.send('400 - Bad Request. Email and/or password cannot be empty.');
+    res.sendStatus(400);
   } else if (emailExist(email)) {
     //error checking - cannot have duplicate emails in db
-    res.statusCode = 400;
-    res.send('400 - Bad Request. THe user with this email already exists.');
+    res.sendStatus(400);
   } else {
     //generate a new user
     const id = generateRandomString();
