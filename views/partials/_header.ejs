@@ -10,12 +10,16 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <form method="POST" action="/login">
+    <form method="POST" action=<% if (locals.username === undefined) { %>"/login"<% } else { %>"/logout"<% } %>>
       <div class="form-row">
-        <div class="col">
-          <input type="text" class="form-control" name="username" placeholder="Sign in with username">
+        <div class="col d-flex align-items-center">
+          <% if (locals.username === undefined) {%> 
+            <input type="text" class="form-control" name="username" placeholder="Sign in with username">
+          <% } else { %>
+            <div>Logged in as: <%= locals.username %></div>
+          <% } %>  
         </div>
-        <button type="submit" class="btn btn-outline-dark">Sign In</button>
+        <button type="submit" class="btn btn-outline-dark"><% if (locals.username === undefined) { %>Sign In<% } else { %>Logout<% } %></button>
       </div>
     </form>
   </nav>
