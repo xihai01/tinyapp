@@ -95,16 +95,21 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
+/*login user*/
+app.get('/login', (req, res) => {
+  res.render('urls_login');
+});
+
 app.post('/login', (req, res) => {
-  //set a cookie containing the username
-  const username = req.body.username;
-  res.cookie('username', username);
+  //set a cookie containing the email
+  const email = (req.body.email).trim();
+  res.cookie('user_id', email);
   res.redirect('/urls');
 });
 
 app.post('/logout', (req, res) => {
   //clear cookies and redirect to /urls
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 });
 

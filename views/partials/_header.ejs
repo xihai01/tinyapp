@@ -10,17 +10,18 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <form method="POST" action=<% if (locals.user_id === undefined) { %>"/login"<% } else { %>"/logout"<% } %>>
       <div class="form-row">
         <div class="col d-flex align-items-center">
-          <% if (locals.user_id === undefined) {%> 
-            <input type="text" class="form-control" name="username" placeholder="Sign in with username">
-          <% } else { %>
+          <% if (locals.user_id !== undefined) {%> 
             <div>Logged in as: <%= locals.user_id.email %></div>
-          <% } %>  
+            <form method="POST" action="/logout">
+              <button class="btn btn-outline-dark">Logout</button>
+            </form>
+          <% } else { %>
+            <a href="/login"><button class="btn btn-outline-dark">Login</button></a>
+            <a href="/register"><button class="btn btn-outline-dark">Register</button></a>
+          <% } %> 
         </div>
-        <button type="submit" class="btn btn-outline-dark"><% if (locals.user_id === undefined) { %>Sign In<% } else { %>Logout<% } %></button>
       </div>
-    </form>
   </nav>
 </header>
