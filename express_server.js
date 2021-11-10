@@ -65,11 +65,16 @@ app.get('/urls', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  const shortURL = generateRandomString();
-  const longURL = req.body.longURL;
-  //save shortURL to our url database
-  urlDatabase[shortURL] = longURL;
-  res.redirect("/urls/" + shortURL); //redirect user to /urls/:shortURL 
+  let user = users[req.cookies["user_id"]];
+  if (user) {
+    const shortURL = generateRandomString();
+    const longURL = req.body.longURL;
+    //save shortURL to our url database
+    urlDatabase[shortURL] = longURL;
+    res.redirect("/urls/" + shortURL); //redirect user to /urls/:shortURL
+  } else {
+    res.sendStatus(403);
+  } 
 });
 
 app.post('/urls/:id', (req, res) => {
@@ -89,8 +94,13 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 app.get('/urls/new', (req, res) => {
   let user = users[req.cookies["user_id"]];
-  const templateVars = { user_id: user };
-  res.render('urls_new', templateVars);
+  //redirect unregistered and not logged in users to login form
+  if (user) {
+    const templateVars = { user_id: user };
+    res.render('urls_new', templateVars);
+  } else {
+    res.redirect('/login');
+  }
 });
 
 app.get('/u/:shortURL', (req, res) => {
