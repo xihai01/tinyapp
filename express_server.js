@@ -109,13 +109,16 @@ app.get('/', (req, res) => {
   }
 });
 
+/*HOMEPAGE*/
 app.get('/urls', (req, res) => {
   //retrieve user data from cookie
   let user = users[req.cookies["user_id"]];
-  //retrieve user's url only
+  //retrieve user's url only (make sure they exist first)
   let urls = { };
   if (user) {
-    urls = urlsForUser(user.id);
+    if (userExist(user.id)) {
+      urls = urlsForUser(user.id);
+    }
   }
   let urlData = {urls: urls, user_id: user};
   res.render('urls_index', urlData);
@@ -123,14 +126,17 @@ app.get('/urls', (req, res) => {
 
 app.post('/urls', (req, res) => {
   let user = users[req.cookies["user_id"]];
+  //make sure the cookie is the users
   if (user) {
-    const shortURL = generateRandomString();
-    const userID = user.id;
-    const longURL = req.body.longURL;
-    //save shortURL to our url database along with user id
-    urlDatabase[shortURL] = { longURL, userID };
-    console.log(urlDatabase);
-    res.redirect("/urls/" + shortURL); //redirect user to /urls/:shortURL
+    if (userExist(user.id)) {
+      const shortURL = generateRandomString();
+      const userID = user.id;
+      const longURL = req.body.longURL;
+      //save shortURL to our url database along with user id
+      urlDatabase[shortURL] = { longURL, userID };
+      console.log(urlDatabase);
+      res.redirect("/urls/" + shortURL); //redirect user to /urls/:shortURL
+    }
   } else {
     res.sendStatus(403);
   } 
@@ -140,15 +146,19 @@ app.post('/urls/:id', (req, res) => {
   const user = users[req.cookies["user_id"]];
   //redirect user to error message if not logged in
   if (user) {
-    const shortURL = req.params.id;
-    if (urlDatabase[shortURL] === undefined) {
-      res.sendStatus(404);
-    } else if (urlDatabase[shortURL].userID !== user.id) {
-      res.sendStatus(403);
-    } else {
-    //update the url database with new link
-    urlDatabase[shortURL].longURL = req.body.longURL;
-    res.redirect('/urls');
+    if (userExist(user.id)) {
+      const shortURL = req.params.id;
+      //send 404 - not found if url does not exist
+      if (urlDatabase[shortURL] === undefined) {
+        res.sendStatus(404);
+      } else if (urlDatabase[shortURL].userID !== user.id) {
+        //send 403 - forbidden to prevent user accessing other's links
+        res.sendStatus(403);
+      } else {
+      //update the url database with new link
+      urlDatabase[shortURL].longURL = req.body.longURL;
+      res.redirect('/urls');
+      }
     }
   } else {
     res.sendStatus(403);
