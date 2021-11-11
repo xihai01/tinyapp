@@ -1,12 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
 const app = express();
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+
+const salt = bcrypt.genSaltSync(10); 
 
 const urlDatabase = {
   b6UTxQ: {
@@ -27,12 +30,12 @@ const users = {
   "aJ48lW": {
     id: "aJ48lW", 
     email: "user@example.com", 
-    password: "12345"
+    password: bcrypt.hashSync("12345", salt)
   },
  "abv90k": {
     id: "abv90k", 
     email: "user2@example.com", 
-    password: "hellothere"
+    password: bcrypt.hashSync("hellothere", salt)
   }
 };
 
@@ -233,7 +236,7 @@ app.post('/login', (req, res) => {
   const password = (req.body.password).trim();
   const foundUser = findUserbyEmail(email);
   if (foundUser) {
-    if (foundUser.password === password) {
+    if (bcrypt.compareSync(password, foundUser.password)) {
       //set the cookie and redirect
       res.cookie('user_id', foundUser.id);
       res.redirect('/urls');
@@ -260,7 +263,7 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
   const email = (req.body.email).trim();
-  const password = (req.body.password).trim();
+  let password = (req.body.password).trim();
   //error checking - email and/or password can't be empty
   if (email.length === 0 || password.length === 0) {
     res.sendStatus(400);
@@ -268,8 +271,9 @@ app.post('/register', (req, res) => {
     //error checking - cannot have duplicate emails in db
     res.sendStatus(400);
   } else {
-    //generate a new user
+    //generate a new user and store password as a hash
     const id = generateRandomString();
+    password = bcrypt.hashSync(password, salt);
     users[id] = { id, email, password };
     //set a cookie containing user id
     res.cookie('user_id', id);
