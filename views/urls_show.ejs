@@ -15,22 +15,30 @@
   <div class="card text-center">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title">TinyURL for: <%= locals.longURL %></h5>
-      <p class="card-text">Short URL: <a href="/u/<%= locals.shortURL %>"><%= locals.shortURL %></a></p>
+      <% if (locals.user_id) { %> 
+        <h5 class="card-title">TinyURL for: <%= locals.longURL %></h5>
+        <p class="card-text">Short URL: <a href="/u/<%= locals.shortURL %>"><%= locals.shortURL %></a></p>
+      <% } else { %>
+        <p>You do not have permission to view this link. Please login as owner.</p>
+      <% } %>
     </div>
     <div class="card-footer text-muted"></div>
   </div>
   <div class="card text-center">
     <div class="card-header"></div>
     <div class="card-body">
-      <h2>Edit URL</h2>
-      <form method="POST" action="/urls/<%= locals.shortURL %> ">
-        <div class="form-group">
-          <label for="formGroupExampleInput">New URL:</label>
-          <input type="text" class="form-control" name="longURL" placeholder="http://">
-        </div>
-        <button type="submit">Submit Changes</button>
-      </form>
+      <% if (locals.user_id) { %> 
+        <h2>Edit URL</h2>
+        <form method="POST" action="/urls/<%= locals.shortURL %> ">
+          <div class="form-group">
+            <label for="formGroupExampleInput">New URL:</label>
+            <input type="text" class="form-control" name="longURL" placeholder="http://">
+          </div>
+          <button type="submit">Submit Changes</button>
+        </form>
+      <% } else { %>
+        <p>You do not have permission to edit this link. Please log in as owner.</p>
+      <% } %> 
     </div>
     <div class="card-footer text-muted"></div>
   </div>
