@@ -60,6 +60,15 @@ function generateRandomString() {
   return result;
 };
 
+function userExist(id) {
+  for (const user in users) {
+    if (users[user].id === id) {
+      return true;
+    }
+  }
+  return false;
+};
+
 function emailExist(email) {
   for (const user in users) {
     if (users[user].email === email) {
@@ -87,6 +96,18 @@ function urlsForUser(id) {
   }
   return output;
 };
+
+/*redirect root to /urls or /login*/
+app.get('/', (req, res) => {
+  let user = users[req.cookies["user_id"]];
+  //redirect to login page if user is not logged in
+  if (user) {
+    //check if user exists in db
+    iuserExist(user.id) ? res.redirect('/urls') : res.redirect('/login');
+  } else {
+    res.redirect('/login');
+  }
+});
 
 app.get('/urls', (req, res) => {
   //retrieve user data from cookie
