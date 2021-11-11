@@ -127,8 +127,12 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
-  res.redirect(longURL);
+  try {
+    const longURL = urlDatabase[req.params.shortURL].longURL;
+    res.redirect(longURL);
+  } catch (error) {
+    res.sendStatus(404);
+  }
 });
 
 app.get('/urls/:shortURL', (req, res) => {
