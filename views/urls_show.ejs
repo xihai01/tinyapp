@@ -15,9 +15,9 @@
   <div class="card text-center">
     <div class="card-header"></div>
     <div class="card-body">
-      <% if (locals.user_id) { %> 
-        <h5 class="card-title">TinyURL for: <%= locals.longURL %></h5>
-        <p class="card-text">Short URL: <a href="/u/<%= locals.shortURL %>"><%= locals.shortURL %></a></p>
+      <% if (user_id) { %> 
+        <h5 class="card-title">TinyURL for: <%= longURL %></h5>
+        <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
       <% } else { %>
         <p>You do not have permission to view this link. Please login as owner.</p>
       <% } %>
@@ -27,9 +27,9 @@
   <div class="card text-center">
     <div class="card-header"></div>
     <div class="card-body">
-      <% if (locals.user_id) { %> 
+      <% if (user_id) { %> 
         <h2>Edit URL</h2>
-        <form method="POST" action="/urls/<%= locals.shortURL %> ">
+        <form method="POST" action="/urls/<%= shortURL %> ">
           <div class="form-group">
             <label for="formGroupExampleInput">New URL:</label>
             <input type="text" class="form-control" name="longURL" placeholder="http://">
