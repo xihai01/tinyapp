@@ -91,7 +91,7 @@ app.post('/urls', (req, res) => {
       console.log(urlDatabase);
       res.redirect("/urls/" + shortURL); //redirect user to /urls/:shortURL
     } else {
-      res.sendStatus(403);
+      res.status(403).send('403 - Please login or register.');
     } 
 });
 
@@ -104,17 +104,17 @@ app.post('/urls/:id', (req, res) => {
       const shortURL = req.params.id;
       //send 404 - not found if url does not exist
       if (urlDatabase[shortURL] === undefined) {
-        res.sendStatus(404);
+        res.status(404).send('404 - This url does not exist.');
       } else if (urlDatabase[shortURL].userID !== user) {
         //send 403 - forbidden to prevent user accessing other's links
-        res.sendStatus(403);
+        res.status(403).send('403 - You do not have permission to access.');
       } else {
         //update the url database with new link
         urlDatabase[shortURL].longURL = req.body.longURL;
         res.redirect('/urls');
       }
     } else {
-      res.sendStatus(403);
+      res.status(403).send('403 - You do not have permission to access.');
     }
 });
 
@@ -126,16 +126,16 @@ app.post('/urls/:shortURL/delete', (req, res) => {
     //fetch the short url to be deleted
     const shortURL = req.params.shortURL;
     if (urlDatabase[shortURL] === undefined) {
-      res.sendStatus(404);
+      res.status(404).send('404 - The link you are trying to delete does not exist.');
     } else if (urlDatabase[shortURL].userID !== user) {
-      res.sendStatus(403);
+      res.status(403).send('403 - You do not have permission to delete this link.');
     } else {
       //delete the urls from database
       delete urlDatabase[shortURL];
       res.redirect('/urls');
     }
   } else {
-    res.sendStatus(403);
+    res.status(403).send('403 - You do not have permission to delete this link.');
   }
 });
 
@@ -160,7 +160,7 @@ app.get('/u/:shortURL', (req, res) => {
     const longURL = urlDatabase[req.params.shortURL].longURL;
     res.redirect(longURL);
   } catch (error) {
-    res.sendStatus(404);
+    res.status(404).send('404 - This url does not exist.');
   }
 });
 
@@ -215,10 +215,10 @@ app.post('/login', (req, res) => {
       req.session.user_id = foundUser.id;
       res.redirect('/urls');
     } else {
-      res.sendStatus(403);
+      res.status(403).send('403 - You entered the wrong email/password. Please try again.');
     }
   } else {
-    res.sendStatus(403);
+    res.status(403).send('403 - Please enter a valid email and password.');
   }
 });
 
@@ -226,7 +226,7 @@ app.post('/login', (req, res) => {
 app.post('/logout', (req, res) => {
   //clear cookies and redirect to /urls
   //res.clearCookie('user_id')
-  req.session.user_id = null;
+  delete req.session.user_id;
   res.redirect('/urls');
 });
 
@@ -250,10 +250,10 @@ app.post('/register', (req, res) => {
   let password = (req.body.password).trim();
   //error checking - email and/or password can't be empty
   if (email.length === 0 || password.length === 0) {
-    res.sendStatus(400);
+    res.status(400).send('400 - Email and/or password cannot be left empty.');
   } else if (emailExist(email, users)) {
     //error checking - cannot have duplicate emails in db
-    res.sendStatus(400);
+    res.status(400).send('400 - An account with this email already exists.');
   } else {
     //generate a new user and store password as a hash
     const id = generateRandomString();
