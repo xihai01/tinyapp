@@ -194,6 +194,11 @@ app.get('/urls/:shortURL', (req, res) => {
 
 /*login user*/
 app.get('/login', (req, res) => {
+  let user = req.session.user_id;
+  //redirect user to /urls if already logged in
+  if (userExist(user, users)) {
+    res.redirect('/urls');
+  }
   res.render('urls_login');
 });
 
@@ -233,9 +238,10 @@ app.get('/register', (req, res) => {
     const templateVars = { user_id: undefined };
     res.render('urls_register', templateVars);
   } else {
-    email = users[user].email;
+/*     email = users[user].email;
     const templateVars = { email, user_id: user };
-    res.render('urls_register', templateVars);
+    res.render('urls_register', templateVars); */
+    res.redirect('/urls');
   }
 });
 
