@@ -8,9 +8,9 @@ The following technologies are used:
 
 ## Final Product
 
-!["screenshot description"](#)
+!["TinyApp Homepage"](https://github.com/xihai01/tinyapp/blob/master/docs/urls-page.png?raw=true)
 
-!["screenshot description"](#)
+!["URL Edit Page"](https://github.com/xihai01/tinyapp/blob/master/docs/urls-show.png?raw=true)
 
 ## Dependencies
 
