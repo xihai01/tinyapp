@@ -14,7 +14,7 @@
         <div class="col d-flex align-items-center">
           <% if (locals.user_id !== undefined) {%> 
             <div>Logged in as: <%= locals.email %></div>
-            <form method="POST" action="/logout">
+            <form method="POST" action="/logout?_method=PUT">
               <button class="btn btn-outline-dark">Logout</button>
             </form>
           <% } else { %>

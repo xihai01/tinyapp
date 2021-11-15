@@ -29,7 +29,7 @@
     <div class="card-body">
       <% if (user_id) { %> 
         <h2>Edit URL</h2>
-        <form method="POST" action="/urls/<%= shortURL %> ">
+        <form method="POST" action="/urls/<%= shortURL %>?_method=PUT">
           <div class="form-group">
             <label for="formGroupExampleInput">New URL:</label>
             <input type="text" class="form-control" name="longURL" placeholder="http://">

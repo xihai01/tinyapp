@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
+const methodOverride = require('method-override');
 const {
   generateRandomString,
   userExist,
@@ -20,6 +21,7 @@ app.use(cookieSession({
   name: "session",
   keys: ["I like security because it is cool", "to be or not to be that is the question"]
 }));
+app.use(methodOverride('_method'));
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -76,7 +78,7 @@ app.get('/urls', (req, res) => {
 });
 
 /*create a new url*/
-app.post('/urls', (req, res) => {
+app.put('/urls', (req, res) => {
   let user = req.session.user_id;
   //make sure the cookie is the users
   if (userExist(user, users)) {
@@ -92,7 +94,7 @@ app.post('/urls', (req, res) => {
 });
 
 /*request to edit a link (private)*/
-app.post('/urls/:id', (req, res) => {
+app.put('/urls/:id', (req, res) => {
   let user = req.session.user_id;
   //redirect user to error message if not logged in
   if (userExist(user, users)) {
@@ -114,7 +116,7 @@ app.post('/urls/:id', (req, res) => {
 });
 
 /*request to delete a link (private)*/
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL', (req, res) => {
   let user = req.session.user_id;
   if (userExist(user, users)) {
     //fetch the short url to be deleted
@@ -195,7 +197,7 @@ app.get('/login', (req, res) => {
 });
 
 /*request to login user*/
-app.post('/login', (req, res) => {
+app.put('/login', (req, res) => {
   //error checking - email and password must match to login
   const email = (req.body.email).trim();
   const password = (req.body.password).trim();
@@ -214,7 +216,7 @@ app.post('/login', (req, res) => {
 });
 
 /*logout and clear cookies*/
-app.post('/logout', (req, res) => {
+app.put('/logout', (req, res) => {
   //clear cookies and redirect to /urls
   delete req.session.user_id;
   res.redirect('/urls');
@@ -231,7 +233,7 @@ app.get('/register', (req, res) => {
   }
 });
 
-app.post('/register', (req, res) => {
+app.put('/register', (req, res) => {
   const email = (req.body.email).trim();
   let password = (req.body.password).trim();
   //error checking - email and/or password can't be empty
