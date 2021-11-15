@@ -2,9 +2,9 @@
 
 TinyApp is a full stack web application built with Node and Express that allows users to shorten long URLs (à la bit.ly).
 
-The following technologies are used:
+Stacks used for this project:
 * **Backend**: NodeJS, Express
-* **Frontend**: HTML, CSS, JS, Bootstrap
+* **Frontend**: HTML, CSS, Bootstrap
 
 ## Final Product
 
@@ -20,6 +20,7 @@ The following technologies are used:
 - bcrypt
 - body-parser
 - cookie-session
+- method-override
 
 ## Getting Started
 
